@@ -1,9 +1,10 @@
-from src.database_wrapper import Column, Integer, String
-from src.dictionary_builder import DictionaryBuilder as Builder
-from src.timer import Timer
+from sqlalchemy import Column, Integer, String
+from dictionary_builder import DictionaryBuilder as Builder
+import os
+# from src.timer import Timer
 import sys
 
-DATA_DIR = "data"
+DATA_DIR = '{0}/{1}'.format(os.path.curdir, 'data')
 DICTIONARY_FILE = DATA_DIR + "/dic_NO/E.dix"
 
 
@@ -17,7 +18,7 @@ def create_uri():
 
 
 def main(*args, **kwargs):
-    t = Timer()
+    # t = Timer()
     columns = [
         Column('word_id', Integer, primary_key=True),
         Column('word', String(35)),
@@ -34,7 +35,7 @@ def main(*args, **kwargs):
     builder = Builder(filepath = DICTIONARY_FILE, sep = '\t', db_uri = create_uri())
     builder.build('E', columns)
 
-    t.elapsed()
+    # t.elapsed()
     del builder
     pass
 

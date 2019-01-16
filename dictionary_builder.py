@@ -1,11 +1,11 @@
-from src.database_wrapper import DatabaseWrapper
-from src.raw_parser import RawDictParser
+from database_wrapper import DatabaseWrapper
+from raw_parser import RawDictParser
 
 WORD_CLASS_NO_EN = {
-    'acronym': 'fork', 'adjective': 'adj', 'common_gender': 'm/f', 'common_noun': 'appell', 'comparative': 'komp', 'conjunction': 'konj',
-    'definite': 'be', 'feminine': 'fem', 'imperative': 'imp', 'infinitive': 'inf', 'indefinite': 'ub', 'masculine': 'mask',
-    'neuter_gender': 'nøyt', 'noun': 'subst', 'ordinal': 'ordenstall', 'past_tense': 'pret', 'passive': 'pass',
-    'perfect_participle': 'perf-part', 'plural': 'fl', 'positive': 'pos', 'proper_noun': 'prop', 'present_tense': 'pres',
+    'acronym': 'fork', 'adjective': 'adj', 'adverb': 'adv', 'common_gender': 'm/f', 'common_noun': 'appell', 'comparative': 'komp',
+    'conjunction': 'konj', 'definite': 'be', 'feminine': 'fem', 'imperative': 'imp', 'infinitive': 'inf', 'indefinite': 'ub',
+    'masculine': 'mask', 'neuter_gender': 'nøyt', 'noun': 'subst', 'ordinal': 'ordenstall', 'past_tense': 'pret', 'passive': 'pass',
+    'perfect_participle': 'perf-part', 'plural': 'fl', 'positive': 'pos', 'proper_noun': 'prop', 'present_tense': 'pres', 'prefix': 'pref',
     'superlative': 'sup', 'singular': 'ent', 'verb': 'verb'}
 
 
@@ -15,11 +15,8 @@ class DictionaryBuilder:
         self.__wbbuilder = DatabaseWrapper(kwargs.pop('db_uri'))
 
     def build(self, table_name: str, columns: list, drop = True):
-        print("Creating table...")
         self.__wbbuilder.create_table(table_name, columns, drop)
-        print("Reading data...")
         parsed = self.__parser.parse_lines()
-        print("Writing data...")
         for words, paradigmes in zip(parsed[0].values(), parsed[1].values()):
             for word, paradigme in zip(words, paradigmes):
                 row_values = {'word': word}
