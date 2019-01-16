@@ -1,37 +1,35 @@
-from collections import ChainMap, defaultdict, deque
+from collections import defaultdict
 
 
-class DictionaryReader:
-    def __init__(self, filename, separator):
-        self.__file_name = filename
-        self.__separator = separator
-        self.__freader = None
+class RawDictParser:
+    def __init__(self, *args, **kwargs):
+        self.__filename = kwargs.pop('filename')
+        self.__separator = kwargs.pop('sep')
         self.__line_count = 0
-        self.__dictionary = ChainMap()
+        self.__dictionary = list()
         self._lines_count()
         self._keyword = ""
 
     def __delete__(self, instance):
-        self.__freader.close()
         self.__dictionary.clear()
         del instance
         pass
 
-    def extract_words(self, key_index = 1, word_index = 2):
+    def extract_words(self, key_index = 0, word_index = 2):
         word_map = defaultdict(list)
         self._extract(word_map, key_index, word_index)
         return word_map
         pass
 
-    def extract_mophems(self, key_index = 1, morphem_index = 3):
+    def extract_mophems(self, key_index = 0, morphem_index = 3):
         morph_map = defaultdict(list)
         self._extract(morph_map, key_index, morphem_index)
         return morph_map
         pass
 
     def parse_lines(self):
-        self.__dictionary["words"] = self.extract_words()
-        self.__dictionary["morphems"] = self.extract_mophems()
+        self.__dictionary.insert(0, self.extract_words())
+        self.__dictionary.insert(1, self.extract_mophems())
         return self.__dictionary
         pass
 
@@ -39,8 +37,7 @@ class DictionaryReader:
         return self.__line_count
 
     def _lines_count(self):
-        self.__freader = open(self.__file_name, 'r')
-        with self.__freader as f:
+        with open(self.__filename, 'r') as f:
             for line in f:
                 self.__line_count += 1
                 pass
@@ -48,8 +45,7 @@ class DictionaryReader:
 
     def _parse_line(self, line_index):
         index = 0
-        self.__freader = open(self.__file_name, 'r')
-        with self.__freader as file:
+        with open(self.__filename, 'r') as file:
             for line in file:
                 if line_index == index:
                     return line
