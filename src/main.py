@@ -20,7 +20,7 @@ def main(*args, **kwargs):
     t = Timer()
     columns = [
         Column('word_id', Integer, primary_key=True),
-        Column('word', String(25)),
+        Column('word', String(35)),
         Column('desc1', String(20)),
         Column('desc2', String(20)),
         Column('desc3', String(20)),
