@@ -1,24 +1,21 @@
 from sqlalchemy import Column, Integer, String
 from dictionary_builder import DictionaryBuilder as Builder
 import os
-# from src.timer import Timer
 import sys
 
 DATA_DIR = '{0}/{1}'.format(os.path.curdir, 'data')
-DICTIONARY_FILE = DATA_DIR + "/dic_NO/E.dix"
+DICTIONARY_FILE = DATA_DIR + "/NO/J.dix"
 
 
 def create_uri():
     def parse_arg(ident: str):
         return sys.argv[sys.argv.index(ident) + 1]
-    db_uri = '{0}://{1}:{2}@{3}/{4}'
-    return db_uri.format(parse_arg('db_type'), parse_arg('db_user'), parse_arg('db_pass'),
-                         parse_arg('db_host'), parse_arg('db_name'))
+    db_uri = 'mysql://{0}:{1}@{2}/{3}'
+    return db_uri.format(parse_arg('db_user'), parse_arg('db_pass'), parse_arg('db_host'), parse_arg('db_name'))
     pass
 
 
-def main(*args, **kwargs):
-    # t = Timer()
+if __name__ == '__main__':
     columns = [
         Column('word_id', Integer, primary_key=True),
         Column('word', String(35)),
@@ -33,14 +30,6 @@ def main(*args, **kwargs):
     ]
 
     builder = Builder(filepath = DICTIONARY_FILE, sep = '\t', db_uri = create_uri())
-    builder.build('E', columns)
+    builder.build('J', columns)
 
-    # t.elapsed()
     del builder
-    pass
-
-
-pass
-
-if __name__ == '__main__':
-    main()
