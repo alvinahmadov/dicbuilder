@@ -13,7 +13,6 @@ class DictionaryBuilder:
         pass
 
     def build(self, table_name: str, columns: list, language: str, drop = True):
-        print("Creating table")
         self.__wordbase_builder.create_table(table_name, columns, drop)
         parsed = self.__source_parser.parse_lines()
         for words, paradigms in zip(parsed[0].values(), parsed[1].values()):
@@ -51,7 +50,6 @@ class DictionaryBuilder:
          """
         columns = list()
         index = 0
-        print("Generating column")
         for (col_name, col_type) in column_infos.items():
             if index == primarykey_index:
                 columns.append(Column(col_name, col_type, primary_key = True))
