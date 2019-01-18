@@ -3,7 +3,7 @@ from raw_parser import SDParser
 from morphtypes import load_tag
 
 
-class DictionaryBuilder(object):
+class DictionaryBuilder:
     def __init__(self, **kwargs):
         self._source_parser = SDParser(filename = kwargs.pop('filepath'), sep = kwargs.pop('sep'))
         self._wordbase_builder = DatabaseWrapper(kwargs.pop('db_uri'))
