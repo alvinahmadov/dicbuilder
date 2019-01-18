@@ -1,5 +1,14 @@
-def load_tag(tagname):
+def load_tag(tagname: str) -> dict:
     return TAGS[tagname]
+
+
+def load_tagname(index: int) -> str:
+    local_index = 0
+    for tag in TAGS.keys():
+        if local_index == index:
+            return tag
+        local_index += 1
+    pass
 
 
 TAGS = {

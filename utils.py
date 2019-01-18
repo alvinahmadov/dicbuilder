@@ -22,3 +22,14 @@ def create_uri():
     db_uri = 'mysql://{0}:{1}@{2}/{3}'
     return db_uri.format(parse_arg('db_user'), parse_arg('db_pass'), parse_arg('db_host'), parse_arg('db_name'))
     pass
+
+
+def join_str(*arguments, sep: str) -> str:
+    result = ""
+    for arg in arguments:
+        result += arg
+        if arguments.index(arg) is len(arguments) - 1:
+            break
+        result += sep
+    return result
+    pass

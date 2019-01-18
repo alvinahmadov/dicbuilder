@@ -1,26 +1,22 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Integer, String
 from dictionary_builder import DictionaryBuilder as Builder
-from utils import create_uri
-from morphtypes import load_tag
+from utils import create_uri, join_str
+from morphtypes import load_tagname
 import os
 
-LANGUAGE = 'NO'
-DATA_DIR = os.path.join(os.path.split(os.path.abspath(__file__))[0], 'data')
-DICTIONARY_FILE = DATA_DIR + os.path.sep + LANGUAGE + os.path.sep + "AOA.dix"
+LANG = load_tagname(0)
+FILENAME = 'AOA'
+EXT = 'dix'
+DATA_DIR = 'data'
+ABS_DATA_DIR = os.path.join(os.path.split(os.path.abspath(__file__))[0], DATA_DIR)
+DICTIONARY_FILE = join_str(ABS_DATA_DIR, LANG, join_str(FILENAME, EXT, sep = '.'), sep = '/')
 
 if __name__ == '__main__':
-    columns = [
-        Column('word_id', Integer, primary_key = True),
-        Column('word', String(20)),
-        Column('tag1', String(20)),
-        Column('tag2', String(20)),
-        Column('tag3', String(20)),
-        Column('tag4', String(20)),
-        Column('tag5', String(20)),
-        Column('tag6', String(20)),
-        Column('tag7', String(20))
-    ]
+    cols = {'word_id': Integer, 'word': String(35),
+            'category_1': String(20), 'category_2': String(20), 'category_3': String(20),
+            'category_4': String(20), 'category_5': String(20), 'category_6': String(20), 'category_7': String(20)}
+
     builder = Builder(filepath = DICTIONARY_FILE, sep = '\t', db_uri = create_uri())
-    builder.build('AOA', columns, language = LANGUAGE)
+    builder.build(FILENAME, cols, language = LANG, drop = False)
 
     del builder
