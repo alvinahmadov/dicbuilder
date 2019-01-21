@@ -45,8 +45,8 @@ class SDParser:
             f.close()
 
     def _extract(self, data_map, key_index, value_index, start = 0):
-        for start in range(self.line_count - start):
-            data_list = self.parse_line(start).split(self._separator)
+        for i in range(self.line_count - start):
+            data_list = self.parse_line(i).split(self._separator)
             if self.keyword not in data_list:
                 self.keyword = data_list[key_index]
                 data_map[self.keyword].append(data_list[value_index])

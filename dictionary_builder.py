@@ -7,15 +7,15 @@ class DictionaryBuilder:
     def __init__(self, **kwargs):
         self._source_parser = SDParser(filename = kwargs.pop('filepath'), sep = kwargs.pop('sep'))
         self._wordbase_builder = DatabaseWrapper(kwargs.pop('db_uri'))
+        self.primary_col_index = -1
 
     def __delete__(self, instance):
         pass
 
     def build(self, table_name: str, column_infos: dict, language: str, drop = True):
-        columns = self._wordbase_builder.generate_columns(column_infos, 0)
-        print("Is table \"%s\" in database" % table_name, self._wordbase_builder.has_table(table_name))
+        columns = self._wordbase_builder.generate_columns(column_infos, self.primary_col_index)
         self._wordbase_builder.create_table(table_name, columns, drop)
-        parsed = self._source_parser.parse_lines(60)
+        parsed = self._source_parser.parse_lines(0)
         for words, paradigms in zip(parsed[0].values(), parsed[1].values()):
             for word, paradigm in zip(words, paradigms):
                 row_values = {'word': word}

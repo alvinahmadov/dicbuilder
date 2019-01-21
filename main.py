@@ -5,7 +5,7 @@ from morphtypes import load_tagname
 import os
 
 LANG = load_tagname(0)
-FILENAME = 'AOA'
+FILENAME = 'Q'
 EXT = 'dix'
 DATA_DIR = 'data'
 ABS_DATA_DIR = os.path.join(os.path.split(os.path.abspath(__file__))[0], DATA_DIR)
@@ -17,6 +17,7 @@ if __name__ == '__main__':
             'category_4': String(20), 'category_5': String(20), 'category_6': String(20), 'category_7': String(20)}
 
     builder = Builder(filepath = DICTIONARY_FILE, sep = '\t', db_uri = create_uri())
-    builder.build(FILENAME, cols, language = LANG, drop = False)
+    builder.primary_col_index = 0
+    builder.build(FILENAME, cols, language = LANG, drop = True)
 
     del builder

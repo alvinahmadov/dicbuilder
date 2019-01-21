@@ -21,16 +21,14 @@ class DatabaseWrapper:
          :param drop Drop existing values
          """
         self._tables[table_name] = Table(table_name, self._metadata, *columns)
-        if drop:
+        if self._engine.has_table(table_name) and drop:
             self._metadata.drop_all(self._engine)
         else:
             self._metadata.create_all(self._engine)
-        self.update_table(table_name)
         return table_name
 
     def update_table(self, table_name):
         print(self._metadata.get_children())
-        Table.select()
         for col in self._tables[table_name].primary_key:
             print(col.key)
         pass
@@ -60,9 +58,7 @@ class DatabaseWrapper:
         columns = list()
         index = 0
         for (col_name, col_type) in column_infos.items():
-            if index == primarykey_index:
-                columns.append(Column(col_name, col_type, primary_key = True))
-            else:
-                columns.append(Column(col_name, col_type))
+            primary = index == primarykey_index
+            columns.append(Column(col_name, col_type, primary_key = primary))
             index += 1
         return columns
