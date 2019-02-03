@@ -23,8 +23,7 @@ class DatabaseWrapper:
         self._tables[table_name] = Table(table_name, self._metadata, *columns)
         if self._engine.has_table(table_name) and drop:
             self._metadata.drop_all(self._engine)
-        else:
-            self._metadata.create_all(self._engine)
+        self._metadata.create_all(self._engine)
         return table_name
 
     def update_table(self, table_name):

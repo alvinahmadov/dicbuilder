@@ -12,7 +12,8 @@ TAGS = {
         'imperative': 'imp',
         'infinitive': 'inf',
         'indefinite': 'ub',
-        'intransitive': 'intrans',
+        'intransitive': 'intrans1',
+        'interjection': 'interj',
         'masculine': 'mask',
         'neuter_gender': 'nøyt',
         'noun': 'subst',
@@ -20,6 +21,7 @@ TAGS = {
         'past_tense': 'pret',
         'passive': 'pass',
         'perfect_participle': 'perf-part',
+        'present_participle': 'pres-part',
         'plural': 'fl',
         'positive': 'pos',
         'proper_noun': 'prop',
@@ -27,7 +29,7 @@ TAGS = {
         'prefix': 'pref',
         'superlative': 'sup',
         'singular': 'ent',
-        'transitive': 'trans',
+        'transitive': '<trans1',
         'verb': 'verb'
     },
     'DE': {
