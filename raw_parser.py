@@ -1,4 +1,29 @@
 from collections import defaultdict
+from threading import Thread
+from multiprocessing import Process
+
+
+class ParseThread(Thread):
+    def __init__(self, group = None, target = None, args = ()):
+        Thread.__init__(self, group = group, target = target, args = args, name = None)
+        self._args = args
+        self._target = target
+
+    def run(self):
+        if self._target:
+            return self._target(*self._args)
+        else:
+            return defaultdict(list)
+
+
+class ParseProcess(Process):
+    def __init__(self, target = None, args = ()):
+        Process.__init__(self, None, target, args = args)
+        self._arguments = args
+        self._process = target
+
+    def run(self):
+        return self._process(*self._arguments)
 
 
 class SDParser:
@@ -25,9 +50,15 @@ class SDParser:
         self.extract(morph_map, key_index, paradigm_index, start)
         return morph_map
 
-    def parse_lines(self, start = 0, word_index = 2, paradigm_index = 3, key_index = 0):
-        self._dictionary.insert(0, self.extract_words(key_index, word_index, start))
-        self._dictionary.insert(1, self.extract_paradigms(key_index, paradigm_index, start))
+    def parse_lines(self, start = 0, word_index = 2, paradigm_index = 3, key_index = 0) -> list:
+        word_proc = ParseThread(target = self.extract_words, args = (key_index, word_index, start))
+        paradigm_proc = ParseThread(target = self.extract_paradigms, args = (key_index, paradigm_index, start))
+        word_proc.start()
+        paradigm_proc.start()
+        word_proc.join(0.001)
+        paradigm_proc.join(0.001)
+        self._dictionary.insert(0, word_proc.run())
+        self._dictionary.insert(1, paradigm_proc.run())
         return self._dictionary
 
     def parse_line(self, line_index):
@@ -40,15 +71,14 @@ class SDParser:
 
     def count_lines(self):
         with open(self._filename, 'r') as f:
-            for l in f:
+            for _ in f:
                 self.line_count += 1
             f.close()
 
     def extract(self, data_map, key_index, value_index, start = 0):
         for i in range(self.line_count - start):
-            data_list = self.parse_line(i).split(self._separator)
+            data_list = self.parse_line(i + start).split(self._separator)
             if self.keyword not in data_list:
                 self.keyword = data_list[key_index]
-                data_map[self.keyword].append(data_list[value_index])
-            else:
-                data_map[self.keyword].append(data_list[value_index])
+            # if data_list[value_index] not in data_map[self.keyword]:
+            data_map[self.keyword].append(data_list.pop(value_index))

@@ -1,7 +1,6 @@
 from database_wrapper import DatabaseWrapper
 from raw_parser import SDParser
 from morphtypes import load_tag
-from collections import defaultdict
 
 
 class DictionaryBuilder:
@@ -15,16 +14,16 @@ class DictionaryBuilder:
         del self._wordbase_builder
         pass
 
-    def build(self, table_name: str, column_infos: dict, language: str, drop = True):
+    def build(self, table_name: str, column_infos: dict, language: str, drop = True, start_from = 0):
         columns = self._wordbase_builder.generate_columns(column_infos, self.primary_col_index)
         self._wordbase_builder.create_table(table_name, columns, drop)
-        parsed = self._source_parser.parse_lines()
+        parsed = self._source_parser.parse_lines(start_from)
         for words, paradigms in zip(parsed[0].values(), parsed[1].values()):
             for word, paradigm in zip(words, paradigms):
                 row_values = {'word': word}
                 self._variable_row_values(language, row_values, paradigm, columns, 2)
                 self._wordbase_builder.insert_values(table_name, row_values)
-        print("Database build finished.")
+        print("Database build for \"%s\" finished." % table_name)
 
     def read(self, table_name, column):
         pass
@@ -40,8 +39,10 @@ class DictionaryBuilder:
     def translate_tag(dictionary: dict, row: str):
         values = row.split(' ')
         translated_values = list()
+        index = 0
         for value in values:
             for key, cmp_value in zip(dictionary.keys(), dictionary.values()):
-                if cmp_value in value:
-                    translated_values.append(key)
+                if value == cmp_value and key not in translated_values:
+                    translated_values.insert(index, key)
+                    index += 1
         return translated_values

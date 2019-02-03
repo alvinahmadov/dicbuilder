@@ -12,7 +12,7 @@ TAGS = {
         'imperative': 'imp',
         'infinitive': 'inf',
         'indefinite': 'ub',
-        'intransitive': 'intrans1',
+        'intransitive': '<intrans1>',
         'interjection': 'interj',
         'masculine': 'mask',
         'neuter_gender': 'nøyt',
@@ -29,7 +29,7 @@ TAGS = {
         'prefix': 'pref',
         'superlative': 'sup',
         'singular': 'ent',
-        'transitive': '<trans1',
+        'transitive': '<trans1>',
         'verb': 'verb'
     },
     'DE': {
