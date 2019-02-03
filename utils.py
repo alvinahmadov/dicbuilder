@@ -24,7 +24,7 @@ def create_uri():
     pass
 
 
-def join_str(*arguments, sep: str) -> str:
+def concat(*arguments, sep = '') -> str:
     result = ""
     for arg in arguments:
         result += arg
