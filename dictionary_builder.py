@@ -1,6 +1,7 @@
 from database_wrapper import DatabaseWrapper
 from raw_parser import SDParser
 from morphtypes import load_tag
+import re as regex
 
 
 class DictionaryBuilder:
@@ -37,7 +38,7 @@ class DictionaryBuilder:
             index += 1
 
     def _parse(self, table_name, columns, language, start = 0, end = 0):
-        parsed = self._source_parser.parse_lines(start, end)
+        parsed = self._source_parser.parse_lines(0, (2, 3), start = start, end = end)
         for words, paradigms in zip(parsed[0].values(), parsed[1].values()):
             for word, paradigm in zip(words, paradigms):
                 row_values = {'word': word}
@@ -52,7 +53,8 @@ class DictionaryBuilder:
         index = 0
         for value in values:
             for key, cmp_value in zip(dictionary.keys(), dictionary.values()):
-                if value == cmp_value and key not in translated_values:
+                if regex.match(r'<?' + cmp_value + r'(\d?|>?)', value, regex.I) is not None \
+                        and key not in translated_values:
                     translated_values.insert(index, key)
                     index += 1
         return translated_values

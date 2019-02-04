@@ -5,7 +5,7 @@ from morphtypes import load_tagname
 import os
 
 LANG = load_tagname(0)
-FILENAME = 'A'
+FILENAME = 'C'
 EXT = 'dix'
 DATA_DIR = 'data'
 ABS_DATA_DIR = os.path.join(os.path.split(os.path.abspath(__file__))[0], DATA_DIR)
@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     builder = Builder(filepath = DICTIONARY_FILE, sep = '\t', db_uri = create_uri())
     builder.primary_col_index = 0
-    # builder.build('A', cols, language = LANG, start = 0, end = 200)
-    builder.resume('A', cols, LANG, 0, 4000)
+    builder.build('C', cols, LANG)
+    # builder.resume('C', cols, LANG, 0, 4000)
     # print(builder.read('X', row_num = 150))
     del builder

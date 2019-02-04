@@ -12,7 +12,7 @@ TAGS = {
         'imperative': 'imp',
         'infinitive': 'inf',
         'indefinite': 'ub',
-        'intransitive': '<intrans1>',
+        'intransitive': 'intrans',
         'interjection': 'interj',
         'masculine': 'mask',
         'neuter_gender': 'nøyt',
@@ -27,9 +27,10 @@ TAGS = {
         'proper_noun': 'prop',
         'present_tense': 'pres',
         'prefix': 'pref',
+        'roman_num': 'romertall',
         'superlative': 'sup',
         'singular': 'ent',
-        'transitive': '<trans1>',
+        'transitive': 'trans',
         'verb': 'verb'
     },
     'DE': {
