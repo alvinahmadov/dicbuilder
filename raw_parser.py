@@ -40,19 +40,19 @@ class SDParser:
         self._dictionary.clear()
         del instance
 
-    def extract_words(self, key_index = 0, word_index = 2, start = 0):
+    def extract_words(self, key_index = 0, word_index = 2, start = 0, end = 0):
         word_map = defaultdict(list)
-        self.extract(word_map, key_index, word_index, start)
+        self.extract(word_map, key_index, word_index, start, end)
         return word_map
 
-    def extract_paradigms(self, key_index = 0, paradigm_index = 3, start = 0):
+    def extract_paradigms(self, key_index = 0, paradigm_index = 3, start = 0, end = 0):
         morph_map = defaultdict(list)
-        self.extract(morph_map, key_index, paradigm_index, start)
+        self.extract(morph_map, key_index, paradigm_index, start, end)
         return morph_map
 
-    def parse_lines(self, start = 0, word_index = 2, paradigm_index = 3, key_index = 0) -> list:
-        word_proc = ParseThread(target = self.extract_words, args = (key_index, word_index, start))
-        paradigm_proc = ParseThread(target = self.extract_paradigms, args = (key_index, paradigm_index, start))
+    def parse_lines(self, start = 0, end = 0, word_index = 2, paradigm_index = 3, key_index = 0) -> list:
+        word_proc = ParseThread(target = self.extract_words, args = (key_index, word_index, start, end))
+        paradigm_proc = ParseThread(target = self.extract_paradigms, args = (key_index, paradigm_index, start, end))
         word_proc.start()
         paradigm_proc.start()
         word_proc.join(0.001)
@@ -75,8 +75,8 @@ class SDParser:
                 self.line_count += 1
             f.close()
 
-    def extract(self, data_map, key_index, value_index, start = 0):
-        for i in range(self.line_count - start):
+    def extract(self, data_map, key_index, value_index, start = 0, end = 0):
+        for i in range(end if start + end < self.line_count else self.line_count - start):
             data_list = self.parse_line(i + start).split(self._separator)
             if self.keyword not in data_list:
                 self.keyword = data_list[key_index]

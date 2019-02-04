@@ -14,16 +14,17 @@ class DictionaryBuilder:
         del self._wordbase_builder
         pass
 
-    def build(self, table_name: str, column_infos: dict, language: str, start_from = 0):
+    def build(self, table_name: str, column_infos: dict, language: str, start = 0, end = 0):
         columns = self._wordbase_builder.generate_columns(column_infos, self.primary_col_index)
         self._wordbase_builder.create_table(table_name, columns)
-        parsed = self._source_parser.parse_lines(start_from)
-        for words, paradigms in zip(parsed[0].values(), parsed[1].values()):
-            for word, paradigm in zip(words, paradigms):
-                row_values = {'word': word}
-                self._variable_row_values(language, row_values, paradigm, columns, 2)
-                self._wordbase_builder.insert_values(table_name, row_values)
+        self._parse(table_name, columns, language, start, end)
         print("Database build for \"%s.%s\" finished." % (self._wordbase_builder.get_dbname(), table_name))
+
+    def resume(self, table_name: str, column_infos: dict, language: str, primary_key = 0, end = 0):
+        columns = self._wordbase_builder.generate_columns(column_infos, self.primary_col_index)
+        start = self._wordbase_builder.resume_table(table_name, primary_key, columns)
+        self._parse(table_name, columns, language, start, end)
+        pass
 
     def read(self, table_name, row_num = -1, col_num = -1):
         return self._wordbase_builder.fetch_row(table_name, row_num, col_num)
@@ -34,6 +35,15 @@ class DictionaryBuilder:
         for value in translated_values:
             rows[columns[index].name] = value
             index += 1
+
+    def _parse(self, table_name, columns, language, start = 0, end = 0):
+        parsed = self._source_parser.parse_lines(start, end)
+        for words, paradigms in zip(parsed[0].values(), parsed[1].values()):
+            for word, paradigm in zip(words, paradigms):
+                row_values = {'word': word}
+                self._variable_row_values(language, row_values, paradigm, columns, 2)
+                self._wordbase_builder.insert_values(table_name, row_values)
+        pass
 
     @staticmethod
     def translate_tag(dictionary: dict, row: str):

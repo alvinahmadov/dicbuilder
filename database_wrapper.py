@@ -17,19 +17,22 @@ class DatabaseWrapper:
         del self._engine
         del self._metadata
 
-    def create_table(self, table_name, columns):
+    def create_table(self, table_name, columns, drop = True):
         """ Create tables for database
          :param table_name name of the table to create
          :param columns list of column objects
          :param drop Drop existing values
          """
         self._tables[table_name] = Table(table_name, self._metadata, *columns)
-        self._metadata.drop_all(self._engine)
+        if drop and self.has_table(table_name):
+            self._metadata.drop_all(self._engine)
         self._metadata.create_all(self._engine)
         return table_name
 
-    def update_table(self, table_name):
-        pass
+    def resume_table(self, table_name, primarykey_id, columns):
+        self._tables[table_name] = Table(table_name, self._metadata, *columns)
+        self._metadata.create_all(self._engine)
+        return self.fetch_row(table_name, self.row_count(table_name), primarykey_id)
 
     def fetch_row(self, table_name: str, row_number: int, column: int):
         if not self.has_table(table_name):
